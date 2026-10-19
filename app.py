@@ -4,6 +4,7 @@
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # CHANGED (Tutorial 7): imports the CORS tool
 from pydantic import BaseModel
 
 import os
@@ -20,6 +21,14 @@ readings = db["readings"]
 devices.create_index([("mac", ASCENDING)], unique=True)
 
 app = FastAPI()
+
+# CHANGED (Tutorial 7): lets the dashboard (a different origin) read the API's answers
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Device(BaseModel):
